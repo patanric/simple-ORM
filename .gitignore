@@ -1,0 +1,13 @@
+# build files
+/out
+
+# idea folder
+/.idea
+!/.idea/libraries
+!/.idea/misc.xml
+!/.idea/modules.xml
+!/.idea/vcs.xml
+
+# H2 database
+/src/db-files/db-orm.mv.db
+
