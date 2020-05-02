@@ -1,6 +1,8 @@
 # Simple ORM
-This is a simple ORM implementation like for example Hibernate or EclipseLink is done.
-Just much simpler to demonstrate the usage of the reflection API
+This is a simple ORM implementation to demonstrate the usage of the reflection API.
+Well known ORM frameworks like Hibernate or EclipseLink are built based on the same principles.
+To demonstrate the reflection API on methods, a simple dependency injection is also implemented with the same principles as used by Spring, CDI or Guice.
+ORM and DI, are the two main applications of the reflection API.
 
 ## H2 database
 1. Create DB file: `src/db-files/db-orm.mv.db`
