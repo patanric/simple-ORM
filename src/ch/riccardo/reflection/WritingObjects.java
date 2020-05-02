@@ -1,7 +1,9 @@
 package ch.riccardo.reflection;
 
+import ch.riccardo.reflection.beanmanager.BeanManager;
 import ch.riccardo.reflection.model.Person;
 import ch.riccardo.reflection.orm.EntityManager;
+import ch.riccardo.reflection.orm.ManagedEntityManager;
 
 import java.sql.SQLException;
 
@@ -9,7 +11,8 @@ public class WritingObjects {
 
     public static void main(String[] args) throws SQLException, IllegalAccessException {
 
-        EntityManager<Person> entityManager = EntityManager.of(Person.class);
+        BeanManager beanManager = BeanManager.getInstance();
+        EntityManager<Person> entityManager = beanManager.getInstance(ManagedEntityManager.class);
 
         Person riccardo = new Person("Riccardo", 39);
         Person adriano = new Person("Adriano", 27);

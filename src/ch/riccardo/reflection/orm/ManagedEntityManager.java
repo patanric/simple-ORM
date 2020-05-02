@@ -1,5 +1,6 @@
 package ch.riccardo.reflection.orm;
 
+import ch.riccardo.reflection.annotations.Inject;
 import ch.riccardo.reflection.util.ColumnField;
 import ch.riccardo.reflection.util.Metamodel;
 
@@ -12,20 +13,20 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-public abstract class AbstractEntityManager<T> implements EntityManager<T> {
+public class ManagedEntityManager<T> implements EntityManager<T> {
 
     final AtomicLong atomicLong = new AtomicLong(0L);
 
+    @Inject
+    private Connection connection;
+
     @Override
     public void persist(T t) throws SQLException, IllegalAccessException {
-
         Metamodel metamodel = Metamodel.of(t.getClass());
         String sql = metamodel.buildInsertStatement();
         try (PreparedStatement preparedStatement = prepareStatementWith(sql).addVariables(t)) {
             preparedStatement.executeUpdate();
         }
-
-
     }
 
     @Override
@@ -73,27 +74,24 @@ public abstract class AbstractEntityManager<T> implements EntityManager<T> {
     }
 
     private PreparedStatementWrapper prepareStatementWith(String sql) throws SQLException {
-        Connection connection = getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         return new PreparedStatementWrapper(preparedStatement);
     }
 
-    public abstract Connection getConnection() throws SQLException;
-
+    // inner class
     private class PreparedStatementWrapper {
         private final PreparedStatement preparedStatement;
 
         public PreparedStatementWrapper(PreparedStatement preparedStatement) {
-
             this.preparedStatement = preparedStatement;
         }
 
         public PreparedStatement addVariables(T t) throws SQLException, IllegalAccessException {
 
             Metamodel metamodel = Metamodel.of(t.getClass());
-            Class<?> primeryKeyType = metamodel.getPrimaryKey().getType();
+            Class<?> primaryKeyType = metamodel.getPrimaryKey().getType();
             long id = atomicLong.getAndIncrement();
-            if (primeryKeyType == long.class) {
+            if (primaryKeyType == long.class) {
                 preparedStatement.setLong(1, id);
             }
             Field primaryKeyField = metamodel.getPrimaryKey().getField();
